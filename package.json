@@ -1,5 +1,9 @@
 {
+  "name": "aquiweb-e2e",
+  "version": "1.0.0",
+  "description": "AquiWeb E2E Tests",
   "scripts": {
+    "test": "cypress run",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run --env allure=true",
     "allure:report": "allure generate allure-results --clean -o allure-report",
@@ -7,16 +11,18 @@
     "test:allure": "npm run allure:clear && cypress run --env allure=true && npm run allure:report",
     "allure:open": "allure open allure-report"
   },
-  "name": "aquiweb_e2e",
-  "version": "1.0.0",
-  "main": "index.js",
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "main": "index.js",
   "devDependencies": {
-    "@shelex/cypress-allure-plugin": "^2.40.2",
-    "allure-commandline": "^2.33.0",
-    "cypress": "^14.2.1"
+    "@shelex/cypress-allure-plugin": "^2.34.0",
+    "allure-commandline": "^2.20.1",
+    "cypress": "^12.0.0"
+  },
+  "dependencies": {
+    "cypress": "^12.0.0",
+    "@shelex/cypress-allure-plugin": "^2.34.0",
+    "allure-commandline": "^2.20.1"
   }
 }
