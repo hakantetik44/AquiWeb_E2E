@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "AquiWeb E2E Tests",
   "scripts": {
-    "test": "DEBUG=cypress:* cypress run --browser electron --headless --no-exit",
+    "test": "cypress run --browser electron --headless",
     "cypress:open": "cypress open",
     "allure:report": "allure generate allure-results --clean -o allure-report",
     "allure:clear": "rm -r allure-results/ allure-report cypress/screenshots cypress/videos || true"
@@ -13,7 +13,7 @@
   "license": "ISC",
   "main": "index.js",
   "devDependencies": {
-    "cypress": "^12.17.4",
+    "cypress": "^14.2.1",
     "@shelex/cypress-allure-plugin": "^2.40.0",
     "allure-commandline": "^2.24.1"
   },

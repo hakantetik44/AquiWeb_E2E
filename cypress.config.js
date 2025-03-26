@@ -3,10 +3,6 @@ const { defineConfig } = require("cypress");
 module.exports = defineConfig({
   e2e: {
     setupNodeEvents(on, config) {
-      on('before:browser:launch', (browser = {}, launchOptions) => {
-        console.log('Launching browser with options:', launchOptions)
-        return launchOptions
-      })
       return config;
     },
     experimentalStudio: true,
@@ -20,13 +16,6 @@ module.exports = defineConfig({
     retries: {
       runMode: 2,
       openMode: 0
-    },
-    reporter: 'cypress-multi-reporters',
-    reporterOptions: {
-      reporterEnabled: 'spec, mocha-junit-reporter',
-      mochaJunitReporterReporterOptions: {
-        mochaFile: 'cypress/results/results-[hash].xml'
-      }
     }
   },
 });
