@@ -1,28 +1,18 @@
 import AstreePage from '../pages/AstreePage';
 
 describe('Tests du Site Astrée Software', () => {
-    before(() => {
-        cy.log('Suite de tests commence');
-    });
-
-    after(() => {
-        cy.log('Suite de tests terminée');
-    });
+    beforeEach(() => {
+        cy.visit('https://www.astree-software.fr/')
+    })
 
     it('Vérification de la page Aquiweb', () => {
-        // Navigation vers la page d'accueil
-        AstreePage.visitHomePage();
+        // Click on Logiciel MES
+        cy.contains('Logiciel MES').click()
 
-        // Cliquer sur Logiciel MES
-        AstreePage.clickMesLogiciel();
+        // Click on Aquiweb
+        cy.contains('Logiciel Aquiweb').click()
 
-        // Cliquer sur Aquiweb
-        AstreePage.clickAquiweb();
-
-        // Vérifier le titre
-        AstreePage.verifyAquiwebTitle('Aquiweb,logiciel MES temps réel');
-
-        // Capture d'écran pour le rapport
-        cy.screenshot('aquiweb-page');
-    });
+        // Verify the title
+        cy.get('h1').should('contain', 'Aquiweb,logiciel MES temps réel')
+    })
 }); 

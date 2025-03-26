@@ -1,4 +1,8 @@
-import '@shelex/cypress-allure-plugin';
+// Import commands.js using ES2015 syntax:
+import './commands'
+
+// Allure reporter
+require('@shelex/cypress-allure-plugin');
 
 beforeEach(() => {
     cy.log('Test başlıyor');
