@@ -16,6 +16,9 @@ module.exports = defineConfig({
     retries: {
       runMode: 2,
       openMode: 0
+    },
+    env: {
+      allure: true
     }
   },
 });

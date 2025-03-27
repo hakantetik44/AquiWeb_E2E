@@ -94,8 +94,15 @@ pipeline {
                     echo '📊 Generating reports...'
                     
                     sh '''
+                        # Generate Allure report
                         npx allure generate ${TEST_RESULTS_DIR} -o allure-report --clean
-                        npx allure serve ${TEST_RESULTS_DIR} &
+                        
+                        # Copy screenshots to Allure results
+                        mkdir -p ${TEST_RESULTS_DIR}/screenshots
+                        cp -r cypress/screenshots/* ${TEST_RESULTS_DIR}/screenshots/ || true
+                        
+                        # Generate Allure report again with screenshots
+                        npx allure generate ${TEST_RESULTS_DIR} -o allure-report --clean
                     '''
 
                     sh 'zip -r test-reports.zip ${TEST_RESULTS_DIR} ${REPORT_DIR} ${VIDEO_DIR}'
