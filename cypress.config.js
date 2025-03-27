@@ -18,13 +18,6 @@ async function setupNodeEvents(on, config) {
   // Allure plugin
   allureWriter(on, config)
 
-  // After run hook
-  on('after:run', async (results) => {
-    if (results) {
-      await allureWriter.endStep(results.state);
-    }
-  });
-
   return config
 }
 
@@ -58,8 +51,7 @@ module.exports = defineConfig({
     nonGlobalStepDefinitions: true,
     stepDefinitions: "cypress/support/step_definitions/**/*.js",
     json: {
-      enabled: true,
-      output: "test-results/cucumber-report.json"
+      enabled: false
     }
   }
 })
