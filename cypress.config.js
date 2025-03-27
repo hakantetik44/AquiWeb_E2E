@@ -18,6 +18,13 @@ async function setupNodeEvents(on, config) {
   // Allure plugin
   allureWriter(on, config)
 
+  // After run hook
+  on('after:run', async (results) => {
+    if (results) {
+      await allureWriter.endStep(results.state);
+    }
+  });
+
   return config
 }
 
@@ -29,14 +36,9 @@ module.exports = defineConfig({
     baseUrl: 'https://astree-software.fr',
     viewportWidth: 1920,
     viewportHeight: 1080,
-    video: true,
+    video: false,
     screenshotOnRunFailure: true,
-    reporter: '@shelex/cypress-allure-plugin',
-    reporterOptions: {
-      allure: true,
-      allureResultsDir: 'allure-results',
-      allureReportDir: 'allure-report'
-    },
+    reporter: 'spec',
     setupNodeEvents,
     experimentalSourceRewriting: true,
     defaultCommandTimeout: 10000,
@@ -48,7 +50,9 @@ module.exports = defineConfig({
       allureResultsDir: 'allure-results',
       allureReportDir: 'allure-report'
     },
-    chromeWebSecurity: false
+    chromeWebSecurity: false,
+    exit: true,
+    record: false
   },
   "cypress-cucumber-preprocessor": {
     nonGlobalStepDefinitions: true,
