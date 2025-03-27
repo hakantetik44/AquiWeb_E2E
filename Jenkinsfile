@@ -192,10 +192,17 @@ EOF
                 archiveArtifacts artifacts: "${REPORT_DIR}/**/*", fingerprint: true, allowEmptyArchive: true
                 archiveArtifacts artifacts: "test-reports.zip", fingerprint: true, allowEmptyArchive: true
                 
-                // Only archive videos if the directory exists and has content
-                if (fileExists("${VIDEO_DIR}")) {
-                    archiveArtifacts artifacts: "${VIDEO_DIR}/**/*", fingerprint: true, allowEmptyArchive: true
-                }
+                sh '''
+                    if [ -d "${VIDEO_DIR}" ] && [ "$(ls -A ${VIDEO_DIR})" ]; then
+                        echo "📼 Archiving test videos..."
+                        exit 0
+                    else
+                        echo "ℹ️ No videos to archive"
+                        exit 0
+                    fi
+                '''
+                
+                archiveArtifacts artifacts: "${VIDEO_DIR}/**/*", fingerprint: true, allowEmptyArchive: true
                 
                 echo '🧹 Cleaning workspace...'
                 cleanWs()
