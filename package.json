@@ -14,7 +14,7 @@
     "test:allure": "npm run test && npm run allure:generate && npm run allure:open",
     "test:run": "cypress run --browser chrome --headed --env allure=true,allureResultsDir=allure-results --record false && allure generate allure-results --clean -o allure-report && allure open allure-report --port 0",
     "test:report": "allure generate allure-results --clean -o allure-report && allure open allure-report --port 0",
-    "test:auto": "cypress run --browser chrome --headed --env allure=true,allureResultsDir=allure-results --record false && sleep 2 && allure generate allure-results --clean -o allure-report && allure open allure-report --port 0"
+    "test:auto": "cypress run --browser chrome --headed --env allure=true,allureResultsDir=allure-results --record false --no-exit && allure generate allure-results --clean -o allure-report && allure open allure-report --port 0"
   },
   "keywords": [
     "cypress",
