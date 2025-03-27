@@ -14,6 +14,7 @@ pipeline {
         CUCUMBER_REPORT = 'test-results/cucumber-report.json'
         TIMESTAMP = new Date().format('yyyy-MM-dd_HH-mm-ss')
         CYPRESS_CACHE_FOLDER = "${WORKSPACE}/.cache/Cypress"
+        DISPLAY = ':99'
     }
 
     stages {
@@ -32,6 +33,14 @@ pipeline {
                     
                     echo "📦 Installing dependencies..."
                     npm install --legacy-peer-deps
+                    
+                    echo "📦 Setting up virtual display..."
+                    if [ -x "$(command -v Xvfb)" ]; then
+                        Xvfb :99 -screen 0 1920x1080x24 > /dev/null 2>&1 &
+                        echo "✅ Xvfb started"
+                    else
+                        echo "⚠️ Xvfb not found, continuing without it..."
+                    fi
                     
                     echo "📦 Verifying Cypress..."
                     npx cypress verify
@@ -61,12 +70,22 @@ pipeline {
                         --config-file cypress.config.js \
                         --browser chrome \
                         --headed \
+                        --no-exit \
                         || {
                             echo "❌ Test execution failed"
-                            echo "📋 Cypress binary location:"
+                            echo "📋 Debug information:"
+                            echo "Cypress binary location:"
                             ls -la ${CYPRESS_CACHE_FOLDER}
-                            echo "📋 Workspace location:"
+                            echo "Workspace location:"
                             pwd
+                            echo "Chrome version:"
+                            google-chrome --version || true
+                            echo "Display info:"
+                            echo $DISPLAY
+                            echo "Xvfb processes:"
+                            ps aux | grep Xvfb || true
+                            echo "Recent Cypress logs:"
+                            find ~/.config/Cypress/logs -type f -exec tail -n 50 {} \\; || true
                             exit 1
                         }
                 '''
@@ -87,7 +106,12 @@ pipeline {
                 ])
                 
                 // Archive artifacts
-                archiveArtifacts artifacts: 'cypress/videos/**/*.mp4,cypress/screenshots/**/*.png,test-results/**/*', allowEmptyArchive: true
+                archiveArtifacts artifacts: '''
+                    cypress/videos/**/*.mp4,
+                    cypress/screenshots/**/*.png,
+                    test-results/**/*,
+                    ~/.config/Cypress/logs/**/*
+                ''', allowEmptyArchive: true
             }
         }
     }
@@ -95,6 +119,10 @@ pipeline {
     post {
         always {
             echo '🧹 Cleaning up workspace...'
+            sh '''
+                # Kill Xvfb if running
+                pkill Xvfb || true
+            '''
             cleanWs()
         }
         success {
