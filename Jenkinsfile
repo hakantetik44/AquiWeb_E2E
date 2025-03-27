@@ -52,7 +52,15 @@ pipeline {
                     sh '''
                         export LANG=en_US.UTF-8
                         export LC_ALL=en_US.UTF-8
+                        
+                        echo "📝 Test Steps:"
+                        echo "1. Navigation vers la page d'accueil"
                         npm run test
+                        
+                        echo "2. Cliquer sur Logiciel MES"
+                        echo "3. Cliquer sur Aquiweb"
+                        echo "4. Vérifier le titre de la page"
+                        echo "5. Prendre une capture d'écran"
                     '''
                 }
             }
@@ -94,15 +102,24 @@ pipeline {
                     echo '📊 Generating reports...'
                     
                     sh '''
+                        # Clean previous results
+                        rm -rf ${TEST_RESULTS_DIR}/*
+                        
+                        # Copy Cypress results to Allure results
+                        cp -r cypress/results/* ${TEST_RESULTS_DIR}/ || true
+                        cp -r cypress/screenshots/* ${TEST_RESULTS_DIR}/screenshots/ || true
+                        
                         # Generate Allure report
                         npx allure generate ${TEST_RESULTS_DIR} -o allure-report --clean
                         
-                        # Copy screenshots to Allure results
-                        mkdir -p ${TEST_RESULTS_DIR}/screenshots
-                        cp -r cypress/screenshots/* ${TEST_RESULTS_DIR}/screenshots/ || true
-                        
-                        # Generate Allure report again with screenshots
-                        npx allure generate ${TEST_RESULTS_DIR} -o allure-report --clean
+                        # Verify Allure report generation
+                        if [ -d "allure-report" ]; then
+                            echo "✅ Allure report generated successfully"
+                            ls -la allure-report/
+                        else
+                            echo "❌ Failed to generate Allure report"
+                            exit 1
+                        fi
                     '''
 
                     sh 'zip -r test-reports.zip ${TEST_RESULTS_DIR} ${REPORT_DIR} ${VIDEO_DIR}'

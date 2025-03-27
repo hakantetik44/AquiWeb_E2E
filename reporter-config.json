@@ -1,0 +1,8 @@
+{
+  "reporterEnabled": "spec, cypress-mochawesome-reporter, allure-mocha",
+  "allureMochaReporterOptions": {
+    "resultsDir": "allure-results",
+    "reportDir": "allure-report",
+    "overwrite": true
+  }
+} 

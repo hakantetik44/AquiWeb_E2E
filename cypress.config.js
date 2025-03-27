@@ -19,6 +19,10 @@ module.exports = defineConfig({
     },
     env: {
       allure: true
+    },
+    reporter: 'cypress-multi-reporters',
+    reporterOptions: {
+      configFile: 'reporter-config.json'
     }
   },
 });
