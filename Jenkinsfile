@@ -58,14 +58,32 @@ pipeline {
                         export LANG=en_US.UTF-8
                         export LC_ALL=en_US.UTF-8
                         
-                        echo "📝 Test Steps:"
-                        echo "1. Navigation vers la page d'accueil"
-                        npm run test
+                        echo "📝 Starting Test Execution..."
+                        echo "Current Directory: $(pwd)"
+                        echo "Node Version: $(node --version)"
+                        echo "NPM Version: $(npm --version)"
                         
-                        echo "2. Cliquer sur Logiciel MES"
-                        echo "3. Cliquer sur Aquiweb"
-                        echo "4. Vérifier le titre de la page"
-                        echo "5. Prendre une capture d'écran"
+                        # Run tests with detailed logging
+                        CYPRESS_VERBOSE=true npm run test -- --config video=true,screenshotOnRunFailure=true
+                        
+                        echo "📊 Test Execution Completed"
+                        echo "Checking test results..."
+                        
+                        # Check if test results exist
+                        if [ -d "${TEST_RESULTS_DIR}" ]; then
+                            echo "✅ Test results directory exists"
+                            ls -la ${TEST_RESULTS_DIR}
+                        else
+                            echo "❌ Test results directory not found"
+                        fi
+                        
+                        # Check if cucumber reports exist
+                        if [ -f "${CUCUMBER_REPORT}" ]; then
+                            echo "✅ Cucumber report exists"
+                            cat ${CUCUMBER_REPORT} | jq '.'
+                        else
+                            echo "❌ Cucumber report not found"
+                        fi
                     '''
                 }
             }

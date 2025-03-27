@@ -30,15 +30,15 @@ module.exports = defineConfig({
     screenshotOnRunFailure: true,
     reporter: 'cypress-multi-reporters',
     reporterOptions: {
-      reporterEnabled: 'cypress-mochawesome-reporter',
+      reporterEnabled: 'cypress-mochawesome-reporter, allure-mocha',
       cypressMochawesomeReporterReporterOptions: {
         charts: true,
         reportPageTitle: 'AquiWeb E2E Test Report',
         embeddedScreenshots: true,
         inlineAssets: true,
-        saveAllAttempts: false,
+        saveAllAttempts: true,
         overwrite: false,
-        html: false,
+        html: true,
         json: true,
         reportDir: 'test-results'
       }
@@ -48,7 +48,11 @@ module.exports = defineConfig({
     defaultCommandTimeout: 10000,
     pageLoadTimeout: 30000,
     requestTimeout: 10000,
-    responseTimeout: 30000
+    responseTimeout: 30000,
+    logLevel: 'debug',
+    env: {
+      CYPRESS_VERBOSE: true
+    }
   },
   cucumberJson: {
     generate: true,
