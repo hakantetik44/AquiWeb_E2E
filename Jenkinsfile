@@ -98,20 +98,7 @@ pipeline {
                         npx allure serve ${TEST_RESULTS_DIR} &
                     '''
 
-                    cucumber([
-                        fileIncludePattern: "${CUCUMBER_REPORT}",
-                        jsonReportDirectory: '.',
-                        reportTitle: 'AquiWeb E2E Tests',
-                        buildStatus: 'UNSTABLE',
-                        trendsLimit: 10,
-                        classifications: [
-                            ['key': 'Browser', 'value': 'Chrome'],
-                            ['key': 'Environment', 'value': 'Production'],
-                            ['key': 'Platform', 'value': 'Mac OS']
-                        ]
-                    ])
-
-                    sh 'zip -r test-reports.zip ${TEST_RESULTS_DIR} ${REPORT_DIR} ${VIDEO_DIR} ${CUCUMBER_REPORT}'
+                    sh 'zip -r test-reports.zip ${TEST_RESULTS_DIR} ${REPORT_DIR} ${VIDEO_DIR}'
                 }
             }
         }
@@ -123,7 +110,6 @@ pipeline {
                 echo '📦 Archiving artifacts...'
                 archiveArtifacts artifacts: "${TEST_RESULTS_DIR}/**/*", fingerprint: true, allowEmptyArchive: true
                 archiveArtifacts artifacts: "${VIDEO_DIR}/**/*", fingerprint: true, allowEmptyArchive: true
-                archiveArtifacts artifacts: "${CUCUMBER_REPORT}", fingerprint: true, allowEmptyArchive: true
                 archiveArtifacts artifacts: "test-reports.zip", fingerprint: true, allowEmptyArchive: true
                 archiveArtifacts artifacts: "allure-report/**/*", fingerprint: true, allowEmptyArchive: true
                 
@@ -139,7 +125,6 @@ pipeline {
                     Status: SUCCESS
                     Reports:
                     - Allure: ${BUILD_URL}allure
-                    - Cucumber: ${BUILD_URL}cucumber-html-reports/overview-features.html
                     - All Reports (ZIP): ${BUILD_URL}artifact/test-reports.zip
                 """
             }
@@ -152,7 +137,6 @@ pipeline {
                     Status: UNSTABLE
                     Reports:
                     - Allure: ${BUILD_URL}allure
-                    - Cucumber: ${BUILD_URL}cucumber-html-reports/overview-features.html
                     - All Reports (ZIP): ${BUILD_URL}artifact/test-reports.zip
                 """
             }
@@ -165,7 +149,6 @@ pipeline {
                     Status: FAILED
                     Reports:
                     - Allure: ${BUILD_URL}allure
-                    - Cucumber: ${BUILD_URL}cucumber-html-reports/overview-features.html
                     - All Reports (ZIP): ${BUILD_URL}artifact/test-reports.zip
                 """
             }
