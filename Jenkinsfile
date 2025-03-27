@@ -192,7 +192,7 @@ EOF
                 archiveArtifacts artifacts: "${REPORT_DIR}/**/*", fingerprint: true, allowEmptyArchive: true
                 archiveArtifacts artifacts: "test-reports.zip", fingerprint: true, allowEmptyArchive: true
                 
-                # Only archive videos if the directory exists and has content
+                // Only archive videos if the directory exists and has content
                 if (fileExists("${VIDEO_DIR}")) {
                     archiveArtifacts artifacts: "${VIDEO_DIR}/**/*", fingerprint: true, allowEmptyArchive: true
                 }
