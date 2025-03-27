@@ -31,7 +31,9 @@ pipeline {
                     checkout scm
 
                     sh '''
-                        mkdir -p ${TEST_RESULTS_DIR} ${REPORT_DIR} ${VIDEO_DIR} test-output
+                        # Create all necessary directories
+                        mkdir -p ${TEST_RESULTS_DIR} ${REPORT_DIR} ${VIDEO_DIR} test-results test-output
+                        
                         echo "🔍 Environment Info:"
                         echo "Node: $(node --version)"
                         echo "NPM: $(npm --version)"
@@ -45,6 +47,9 @@ pipeline {
                         
                         echo "📦 Installing Allure CLI..."
                         npm install -g allure-commandline
+                        
+                        echo "📦 Installing Cypress..."
+                        npx cypress install
                     '''
                 }
             }
@@ -69,10 +74,10 @@ pipeline {
                         export CYPRESS_allureAttachRequests=true
                         
                         # Create necessary directories
-                        mkdir -p ${TEST_RESULTS_DIR} ${REPORT_DIR} ${VIDEO_DIR}
+                        mkdir -p ${TEST_RESULTS_DIR} ${REPORT_DIR} ${VIDEO_DIR} test-results
                         
                         # Run tests with detailed logging and capture output
-                        CYPRESS_VERBOSE=true npm run test -- --config video=true,screenshotOnRunFailure=true,reporter=cypress-multi-reporters,reporterOptions.configFile=cypress.config.js 2>&1 | tee test-output/test-run.log || {
+                        CYPRESS_VERBOSE=true npx cypress run --config video=true,screenshotOnRunFailure=true,reporter=cypress-multi-reporters,reporterOptions.configFile=cypress.config.js 2>&1 | tee test-output/test-run.log || {
                             echo "❌ Test execution failed with exit code $?"
                             echo "📋 Last 100 lines of test output:"
                             tail -n 100 test-output/test-run.log
