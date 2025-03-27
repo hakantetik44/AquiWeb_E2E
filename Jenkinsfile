@@ -3,6 +3,7 @@ pipeline {
 
     tools {
         nodejs 'Node'
+        allure 'Allure'
     }
 
     environment {
@@ -29,7 +30,7 @@ pipeline {
                     npm --version
                     
                     echo "📦 Installing dependencies..."
-                    npm ci
+                    npm install --legacy-peer-deps
                     
                     echo "📦 Installing Cypress..."
                     npx cypress install
