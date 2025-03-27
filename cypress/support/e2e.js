@@ -21,6 +21,14 @@ if (app) {
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
+// Configure Allure reporting
+before(() => {
+    cy.allure()
+        .epic('AquiWeb E2E Tests')
+        .feature('Automated Testing')
+        .story('End-to-End Test Suite');
+});
+
 beforeEach(() => {
     cy.log('Test başlıyor');
     Cypress.on('uncaught:exception', (err, runnable) => {
@@ -30,4 +38,8 @@ beforeEach(() => {
 
 afterEach(() => {
     cy.log('Test tamamlandı');
+    // Add test status to Allure report
+    cy.allure()
+        .step('Test completed', true)
+        .endStep();
 }); 

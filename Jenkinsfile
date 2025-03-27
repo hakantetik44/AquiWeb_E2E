@@ -11,7 +11,7 @@ pipeline {
         TEST_RESULTS_DIR = 'allure-results'
         REPORT_DIR = 'test-reports'
         VIDEO_DIR = 'test-videos'
-        CUCUMBER_REPORT = 'cucumber-report.json'
+        CUCUMBER_REPORT = 'test-results/cucumber-report.json'
         TIMESTAMP = new Date().format('yyyy-MM-dd_HH-mm-ss')
         PATH = "/usr/local/bin:/opt/homebrew/bin:${env.PATH}"
     }
@@ -63,8 +63,13 @@ pipeline {
                         echo "Node Version: $(node --version)"
                         echo "NPM Version: $(npm --version)"
                         
+                        # Configure Cypress for Allure reporting
+                        export CYPRESS_allure=true
+                        export CYPRESS_allureResultsDir=${TEST_RESULTS_DIR}
+                        export CYPRESS_allureAttachRequests=true
+                        
                         # Run tests with detailed logging and capture output
-                        CYPRESS_VERBOSE=true npm run test -- --config video=true,screenshotOnRunFailure=true 2>&1 | tee test-output/test-run.log || {
+                        CYPRESS_VERBOSE=true npm run test -- --config video=true,screenshotOnRunFailure=true,reporter=cypress-multi-reporters,reporterOptions.configFile=cypress.config.js 2>&1 | tee test-output/test-run.log || {
                             echo "❌ Test execution failed with exit code $?"
                             echo "📋 Last 50 lines of test output:"
                             tail -n 50 test-output/test-run.log
@@ -88,6 +93,23 @@ pipeline {
                         if [ -d "${TEST_RESULTS_DIR}" ]; then
                             echo "✅ Test results directory exists"
                             ls -la ${TEST_RESULTS_DIR}
+                            
+                            # Ensure Allure results are properly formatted
+                            if [ -f "${TEST_RESULTS_DIR}/executor.json" ]; then
+                                echo "✅ Allure executor info exists"
+                            else
+                                echo "📝 Creating Allure executor info..."
+                                cat > ${TEST_RESULTS_DIR}/executor.json << EOF
+{
+    "name": "Jenkins",
+    "type": "jenkins",
+    "url": "${BUILD_URL}",
+    "buildUrl": "${BUILD_URL}",
+    "reportUrl": "${BUILD_URL}allure",
+    "reportName": "Allure Report"
+}
+EOF
+                            fi
                         else
                             echo "❌ Test results directory not found"
                         fi
@@ -98,6 +120,15 @@ pipeline {
                             cat ${CUCUMBER_REPORT} | jq '.'
                         else
                             echo "❌ Cucumber report not found"
+                            echo "📁 Checking cucumber output directory..."
+                            ls -la test-results/
+                        fi
+                        
+                        # Copy Cypress videos to test-videos directory if they exist
+                        if [ -d "cypress/videos" ]; then
+                            echo "📼 Copying Cypress videos..."
+                            mkdir -p ${VIDEO_DIR}
+                            cp -r cypress/videos/* ${VIDEO_DIR}/ || true
                         fi
                     '''
                 }
@@ -158,8 +189,13 @@ pipeline {
             wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']) {
                 echo '📦 Archiving artifacts...'
                 archiveArtifacts artifacts: "${TEST_RESULTS_DIR}/**/*", fingerprint: true, allowEmptyArchive: true
-                archiveArtifacts artifacts: "${VIDEO_DIR}/**/*", fingerprint: true, allowEmptyArchive: true
+                archiveArtifacts artifacts: "${REPORT_DIR}/**/*", fingerprint: true, allowEmptyArchive: true
                 archiveArtifacts artifacts: "test-reports.zip", fingerprint: true, allowEmptyArchive: true
+                
+                # Only archive videos if the directory exists and has content
+                if (fileExists("${VIDEO_DIR}")) {
+                    archiveArtifacts artifacts: "${VIDEO_DIR}/**/*", fingerprint: true, allowEmptyArchive: true
+                }
                 
                 echo '🧹 Cleaning workspace...'
                 cleanWs()

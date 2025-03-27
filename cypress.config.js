@@ -15,6 +15,7 @@ async function setupNodeEvents(on, config) {
   )
   
   require('cypress-mochawesome-reporter/plugin')(on)
+  require('@shelex/cypress-allure-plugin')(on, config)
   return config
 }
 
@@ -22,7 +23,7 @@ module.exports = defineConfig({
   projectId: 'aquiweb-e2e',
   e2e: {
     specPattern: 'cypress/e2e/**/*.feature',
-    supportFile: false,
+    supportFile: 'cypress/support/e2e.js',
     baseUrl: 'https://www.aquiweb.fr',
     viewportWidth: 1920,
     viewportHeight: 1080,
@@ -51,7 +52,10 @@ module.exports = defineConfig({
     responseTimeout: 30000,
     logLevel: 'debug',
     env: {
-      CYPRESS_VERBOSE: true
+      CYPRESS_VERBOSE: true,
+      allure: true,
+      allureResultsDir: 'allure-results',
+      allureAttachRequests: true
     }
   },
   cucumberJson: {
