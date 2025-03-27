@@ -15,7 +15,10 @@
   "devDependencies": {
     "@shelex/cypress-allure-plugin": "^2.40.0",
     "allure-commandline": "^2.24.1",
+    "allure-mocha": "^3.2.1",
     "cypress": "^14.2.1",
+    "cypress-mochawesome-reporter": "^3.8.2",
+    "cypress-multi-reporters": "^2.0.5",
     "uuid": "^11.1.0"
   },
   "dependencies": {

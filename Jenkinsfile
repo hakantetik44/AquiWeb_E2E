@@ -3,6 +3,7 @@ pipeline {
 
     tools {
         nodejs 'Node'
+        allure 'Allure'
     }
 
     environment {
@@ -101,26 +102,13 @@ pipeline {
                 wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']) {
                     echo '📊 Generating reports...'
                     
-                    sh '''
-                        # Clean previous results
-                        rm -rf ${TEST_RESULTS_DIR}/*
-                        
-                        # Copy Cypress results to Allure results
-                        cp -r cypress/results/* ${TEST_RESULTS_DIR}/ || true
-                        cp -r cypress/screenshots/* ${TEST_RESULTS_DIR}/screenshots/ || true
-                        
-                        # Generate Allure report
-                        npx allure generate ${TEST_RESULTS_DIR} -o allure-report --clean
-                        
-                        # Verify Allure report generation
-                        if [ -d "allure-report" ]; then
-                            echo "✅ Allure report generated successfully"
-                            ls -la allure-report/
-                        else
-                            echo "❌ Failed to generate Allure report"
-                            exit 1
-                        fi
-                    '''
+                    allure([
+                        includeProperties: false,
+                        jdk: '',
+                        properties: [],
+                        reportBuildPolicy: 'ALWAYS',
+                        results: [[path: "${TEST_RESULTS_DIR}"]]
+                    ])
 
                     sh 'zip -r test-reports.zip ${TEST_RESULTS_DIR} ${REPORT_DIR} ${VIDEO_DIR}'
                 }
@@ -135,7 +123,6 @@ pipeline {
                 archiveArtifacts artifacts: "${TEST_RESULTS_DIR}/**/*", fingerprint: true, allowEmptyArchive: true
                 archiveArtifacts artifacts: "${VIDEO_DIR}/**/*", fingerprint: true, allowEmptyArchive: true
                 archiveArtifacts artifacts: "test-reports.zip", fingerprint: true, allowEmptyArchive: true
-                archiveArtifacts artifacts: "allure-report/**/*", fingerprint: true, allowEmptyArchive: true
                 
                 echo '🧹 Cleaning workspace...'
                 cleanWs()
