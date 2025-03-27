@@ -160,6 +160,19 @@ pipeline {
                     - Allure: ${BUILD_URL}allure
                     - All Reports (ZIP): ${BUILD_URL}artifact/test-reports.zip
                 """
+                // Open Allure report in browser
+                sh '''
+                    echo "🌐 Opening Allure report in browser..."
+                    if [[ "$OSTYPE" == "darwin"* ]]; then
+                        open "${BUILD_URL}allure"
+                    elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+                        xdg-open "${BUILD_URL}allure"
+                    elif [[ "$OSTYPE" == "msys" || "$OSTYPE" == "win32" ]]; then
+                        start "${BUILD_URL}allure"
+                    else
+                        echo "⚠️ Could not determine OS type to open browser"
+                    fi
+                '''
             }
         }
         unstable {
