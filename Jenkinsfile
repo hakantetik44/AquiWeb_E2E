@@ -63,8 +63,23 @@ pipeline {
                         echo "Node Version: $(node --version)"
                         echo "NPM Version: $(npm --version)"
                         
-                        # Run tests with detailed logging
-                        CYPRESS_VERBOSE=true npm run test -- --config video=true,screenshotOnRunFailure=true
+                        # Run tests with detailed logging and capture output
+                        CYPRESS_VERBOSE=true npm run test -- --config video=true,screenshotOnRunFailure=true 2>&1 | tee test-output/test-run.log || {
+                            echo "❌ Test execution failed with exit code $?"
+                            echo "📋 Last 50 lines of test output:"
+                            tail -n 50 test-output/test-run.log
+                            echo "📁 Checking for error screenshots..."
+                            if [ -d "cypress/screenshots" ]; then
+                                echo "Found screenshots:"
+                                ls -la cypress/screenshots/
+                            fi
+                            echo "📁 Checking for test videos..."
+                            if [ -d "${VIDEO_DIR}" ]; then
+                                echo "Found videos:"
+                                ls -la ${VIDEO_DIR}/
+                            fi
+                            exit 1
+                        }
                         
                         echo "📊 Test Execution Completed"
                         echo "Checking test results..."
