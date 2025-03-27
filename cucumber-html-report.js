@@ -1,16 +1,16 @@
-const reporter = require('multiple-cucumber-html-reporter')
+const report = require('multiple-cucumber-html-reporter')
 
-reporter.generate({
-  jsonDir: 'test-reports',
-  reportPath: 'test-reports/cucumber-html-report',
+report.generate({
+  jsonDir: 'test-results',
+  reportPath: './test-results/cucumber-html',
   metadata: {
     browser: {
-      name: 'electron',
-      version: '12.17.4'
+      name: 'chrome',
+      version: '12'
     },
     device: 'Local test machine',
     platform: {
-      name: 'darwin',
+      name: 'mac',
       version: '24.4.0'
     }
   },
