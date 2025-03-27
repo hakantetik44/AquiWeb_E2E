@@ -13,6 +13,7 @@ pipeline {
         VIDEO_DIR = 'test-videos'
         CUCUMBER_REPORT = 'test-results/cucumber-report.json'
         TIMESTAMP = new Date().format('yyyy-MM-dd_HH-mm-ss')
+        CYPRESS_CACHE_FOLDER = "${WORKSPACE}/.cache/Cypress"
     }
 
     stages {
@@ -23,7 +24,7 @@ pipeline {
 
                 sh '''
                     # Create directories
-                    mkdir -p ${TEST_RESULTS_DIR} ${REPORT_DIR} ${VIDEO_DIR} test-results
+                    mkdir -p ${TEST_RESULTS_DIR} ${REPORT_DIR} ${VIDEO_DIR} test-results ${CYPRESS_CACHE_FOLDER}
                     
                     echo "🔍 Environment Info:"
                     node --version
@@ -32,8 +33,15 @@ pipeline {
                     echo "📦 Installing dependencies..."
                     npm install --legacy-peer-deps
                     
-                    echo "📦 Installing Cypress..."
+                    echo "📦 Verifying Cypress..."
+                    npx cypress verify
+                    
+                    echo "📦 Installing Cypress binary..."
                     npx cypress install
+                    
+                    echo "📦 Cypress cache location:"
+                    echo $CYPRESS_CACHE_FOLDER
+                    ls -la $CYPRESS_CACHE_FOLDER || true
                 '''
             }
         }
@@ -45,17 +53,20 @@ pipeline {
                     echo "📝 Starting Test Execution..."
                     
                     # Set environment variables
-                    export CYPRESS_CACHE_FOLDER=".cache/Cypress"
                     export CYPRESS_allure=true
                     export CYPRESS_allureResultsDir=${TEST_RESULTS_DIR}
                     
-                    # Run tests
-                    npx cypress run \
+                    # Run tests with debug logging
+                    DEBUG=cypress:* npx cypress run \
                         --config-file cypress.config.js \
                         --browser chrome \
                         --headed \
                         || {
                             echo "❌ Test execution failed"
+                            echo "📋 Cypress binary location:"
+                            ls -la ${CYPRESS_CACHE_FOLDER}
+                            echo "📋 Workspace location:"
+                            pwd
                             exit 1
                         }
                 '''
