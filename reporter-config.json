@@ -1,8 +1,14 @@
 {
-  "reporterEnabled": "spec, cypress-mochawesome-reporter, allure-mocha",
-  "allureMochaReporterOptions": {
-    "resultsDir": "allure-results",
-    "reportDir": "allure-report",
-    "overwrite": true
+  "reporterEnabled": "cypress-mochawesome-reporter, @shelex/cypress-allure-plugin",
+  "cypressMochawesomeReporterReporterOptions": {
+    "charts": true,
+    "reportPageTitle": "AquiWeb E2E Test Report",
+    "embeddedScreenshots": true,
+    "inlineAssets": true,
+    "saveAllAttempts": true,
+    "overwrite": false,
+    "html": true,
+    "json": true,
+    "reportDir": "test-results"
   }
 } 

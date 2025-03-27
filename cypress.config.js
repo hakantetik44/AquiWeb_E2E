@@ -2,6 +2,7 @@ const { defineConfig } = require('cypress')
 const createBundler = require('@bahmutov/cypress-esbuild-preprocessor')
 const addCucumberPreprocessorPlugin = require('@badeball/cypress-cucumber-preprocessor').addCucumberPreprocessorPlugin
 const createEsbuildPlugin = require('@badeball/cypress-cucumber-preprocessor/esbuild').createEsbuildPlugin
+const allureWriter = require('@shelex/cypress-allure-plugin/writer')
 
 async function setupNodeEvents(on, config) {
   await addCucumberPreprocessorPlugin(on, config)
@@ -14,7 +15,7 @@ async function setupNodeEvents(on, config) {
     })
   )
   
-  require('cypress-mochawesome-reporter/plugin')(on)
+  allureWriter(on, config)
   require('@shelex/cypress-allure-plugin')(on, config)
   return config
 }

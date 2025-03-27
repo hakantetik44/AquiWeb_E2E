@@ -31,8 +31,11 @@ before(() => {
 
 beforeEach(() => {
     cy.log('Test başlıyor');
-    Cypress.on('uncaught:exception', (err, runnable) => {
-        return false;
+    const testTitle = Cypress.currentTest.title
+    cy.allure().feature(Cypress.spec.name).story(testTitle)
+    Cypress.on('uncaught:exception', (err) => {
+        console.error('Uncaught exception:', err.message)
+        return false
     });
 });
 
