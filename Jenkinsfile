@@ -36,8 +36,11 @@ pipeline {
                         echo "Node: $(node --version)"
                         echo "NPM: $(npm --version)"
                         
+                        echo "🧹 Cleaning up previous installations..."
+                        rm -rf node_modules package-lock.json
+                        
                         echo "📦 Installing dependencies..."
-                        rm -f package-lock.json
+                        npm cache clean --force
                         npm install --no-progress --quiet
                         
                         echo "📦 Installing Allure CLI..."
