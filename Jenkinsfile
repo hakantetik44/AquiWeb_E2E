@@ -90,13 +90,10 @@ pipeline {
                 wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']) {
                     echo '📊 Generating reports...'
                     
-                    allure([
-                        includeProperties: false,
-                        jdk: '',
-                        properties: [],
-                        reportBuildPolicy: 'ALWAYS',
-                        results: [[path: "${TEST_RESULTS_DIR}"]]
-                    ])
+                    sh '''
+                        allure generate ${TEST_RESULTS_DIR} -o allure-report --clean
+                        allure serve ${TEST_RESULTS_DIR} &
+                    '''
 
                     cucumber([
                         fileIncludePattern: "${CUCUMBER_REPORT}",
@@ -125,6 +122,7 @@ pipeline {
                 archiveArtifacts artifacts: "${VIDEO_DIR}/**/*", fingerprint: true, allowEmptyArchive: true
                 archiveArtifacts artifacts: "${CUCUMBER_REPORT}", fingerprint: true, allowEmptyArchive: true
                 archiveArtifacts artifacts: "test-reports.zip", fingerprint: true, allowEmptyArchive: true
+                archiveArtifacts artifacts: "allure-report/**/*", fingerprint: true, allowEmptyArchive: true
                 
                 echo '🧹 Cleaning workspace...'
                 cleanWs()
