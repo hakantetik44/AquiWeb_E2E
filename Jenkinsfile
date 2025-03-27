@@ -35,6 +35,11 @@ pipeline {
                         echo "🔍 Environment Info:"
                         echo "Node: $(node --version)"
                         echo "NPM: $(npm --version)"
+                        
+                        echo "📦 Installing Node.js v18 (LTS)..."
+                        nvm install 18
+                        nvm use 18
+                        
                         echo "📦 Installing dependencies..."
                         rm -f package-lock.json
                         npm install --no-progress --quiet

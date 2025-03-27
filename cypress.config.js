@@ -3,14 +3,14 @@ const { defineConfig } = require("cypress");
 module.exports = defineConfig({
   e2e: {
     setupNodeEvents(on, config) {
-      return config;
+      require('cypress-mochawesome-reporter/plugin')(on)
     },
     experimentalStudio: true,
-    baseUrl: 'https://www.astree-software.fr/',
+    baseUrl: 'https://www.aquiweb.fr',
     defaultCommandTimeout: 10000,
     viewportWidth: 1920,
     viewportHeight: 1080,
-    video: false,
+    video: true,
     screenshotOnRunFailure: true,
     chromeWebSecurity: false,
     retries: {
@@ -20,9 +20,17 @@ module.exports = defineConfig({
     env: {
       allure: true
     },
-    reporter: 'cypress-multi-reporters',
+    reporter: 'cypress-mochawesome-reporter',
     reporterOptions: {
-      configFile: 'reporter-config.json'
+      charts: true,
+      reportPageTitle: 'AquiWeb E2E Test Report',
+      embeddedScreenshots: true,
+      inlineAssets: true,
+      saveAllAttempts: false,
+      overwrite: false,
+      html: false,
+      json: true,
+      reportDir: 'test-reports'
     }
   },
 });
