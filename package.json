@@ -18,6 +18,8 @@
     "allure-mocha": "2.0.0",
     "cypress": "12.17.4",
     "cypress-mochawesome-reporter": "3.5.1",
+    "cypress-multi-reporters": "1.6.1",
+    "cypress-cucumber-json": "1.0.0",
     "esbuild": "0.19.11",
     "multiple-cucumber-html-reporter": "3.5.0"
   },

@@ -12,17 +12,23 @@ module.exports = defineConfig({
     viewportHeight: 1080,
     video: true,
     screenshotOnRunFailure: true,
-    reporter: 'cypress-mochawesome-reporter',
+    reporter: 'cypress-multi-reporters',
     reporterOptions: {
-      charts: true,
-      reportPageTitle: 'AquiWeb E2E Test Report',
-      embeddedScreenshots: true,
-      inlineAssets: true,
-      saveAllAttempts: false,
-      overwrite: false,
-      html: false,
-      json: true,
-      reportDir: 'test-reports'
+      reporterEnabled: 'cypress-mochawesome-reporter, cucumber-json',
+      cypressMochawesomeReporterReporterOptions: {
+        charts: true,
+        reportPageTitle: 'AquiWeb E2E Test Report',
+        embeddedScreenshots: true,
+        inlineAssets: true,
+        saveAllAttempts: false,
+        overwrite: false,
+        html: false,
+        json: true,
+        reportDir: 'test-reports'
+      },
+      cucumberJson: {
+        output: 'test-reports/cucumber-report.json'
+      }
     },
     setupNodeEvents(on, config) {
       on('file:preprocessor',
