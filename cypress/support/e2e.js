@@ -1,10 +1,8 @@
-import '@shelex/cypress-allure-plugin';
-
-// Import commands.js using ES2015 syntax:
+// Import commands
 import './commands'
 
-// Import cucumber steps
-import './step_definitions/astreeStep'
+// Import Allure plugin
+import '@shelex/cypress-allure-plugin'
 
 // Hide XHR requests from command log
 const app = window.top;
@@ -18,31 +16,24 @@ if (app) {
   }(app.console.log));
 }
 
-// Alternatively you can use CommonJS syntax:
-// require('./commands')
-
 // Configure Allure reporting
 before(() => {
-    cy.allure()
-        .epic('AquiWeb E2E Tests')
-        .feature('Automated Testing')
-        .story('End-to-End Test Suite');
-});
+  cy.allure()
+    .epic('AquiWeb E2E Tests')
+    .feature('Automated Testing')
+    .story('End-to-End Test Suite')
+})
 
 beforeEach(() => {
-    cy.log('Test başlıyor');
-    const testTitle = Cypress.currentTest.title
-    cy.allure().feature(Cypress.spec.name).story(testTitle)
-    Cypress.on('uncaught:exception', (err) => {
-        console.error('Uncaught exception:', err.message)
-        return false
-    });
-});
+  cy.log('📝 Test başlıyor...')
+})
 
 afterEach(() => {
-    cy.log('Test tamamlandı');
-    // Add test status to Allure report
-    cy.allure()
-        .step('Test completed', true)
-        .endStep();
-}); 
+  cy.log('✅ Test tamamlandı')
+})
+
+// Handle uncaught exceptions
+Cypress.on('uncaught:exception', (err) => {
+  console.error('❌ Uncaught exception:', err.message)
+  return false
+}) 
