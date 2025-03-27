@@ -77,7 +77,7 @@ pipeline {
                         mkdir -p ${TEST_RESULTS_DIR} ${REPORT_DIR} ${VIDEO_DIR} test-results
                         
                         # Run tests with detailed logging and capture output
-                        CYPRESS_VERBOSE=true npx cypress run --config video=true,screenshotOnRunFailure=true,reporter=cypress-multi-reporters,reporterOptions.configFile=cypress.config.js 2>&1 | tee test-output/test-run.log || {
+                        CYPRESS_VERBOSE=true npx cypress run --config video=true,screenshotOnRunFailure=true,reporter=cypress-multi-reporters,reporterOptions.configFile=cypress.config.js --env cucumberJson=true 2>&1 | tee test-output/test-run.log || {
                             echo "❌ Test execution failed with exit code $?"
                             echo "📋 Last 100 lines of test output:"
                             tail -n 100 test-output/test-run.log
@@ -132,14 +132,20 @@ EOF
                             echo "❌ Test results directory not found"
                         fi
                         
-                        # Check if cucumber reports exist
+                        # Check if cucumber reports exist and generate if needed
                         if [ -f "${CUCUMBER_REPORT}" ]; then
                             echo "✅ Cucumber report exists"
                             cat ${CUCUMBER_REPORT} | jq '.'
                         else
-                            echo "❌ Cucumber report not found"
-                            echo "📁 Checking cucumber output directory..."
-                            ls -la test-results/
+                            echo "📝 Generating Cucumber report..."
+                            # Combine all cucumber JSON files if they exist
+                            if [ -d "test-results" ] && [ "$(ls -A test-results/*.cucumber 2>/dev/null)" ]; then
+                                echo "Found cucumber JSON files, combining them..."
+                                jq -s 'add' test-results/*.cucumber > ${CUCUMBER_REPORT}
+                                echo "✅ Cucumber report generated"
+                            else
+                                echo "❌ No cucumber JSON files found"
+                            fi
                         fi
                         
                         # Copy Cypress videos to test-videos directory if they exist
