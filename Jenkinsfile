@@ -41,7 +41,7 @@ pipeline {
                         
                         echo "📦 Installing dependencies..."
                         npm cache clean --force
-                        npm install --no-progress --quiet
+                        npm install --legacy-peer-deps --no-progress --quiet
                         
                         echo "📦 Installing Allure CLI..."
                         npm install -g allure-commandline
