@@ -37,6 +37,9 @@ pipeline {
                         echo "📦 Installing dependencies..."
                         rm -f package-lock.json
                         npm install --no-progress --quiet
+                        
+                        echo "📦 Installing Allure CLI..."
+                        npm install -g allure-commandline
                     '''
                 }
             }
@@ -91,8 +94,8 @@ pipeline {
                     echo '📊 Generating reports...'
                     
                     sh '''
-                        allure generate ${TEST_RESULTS_DIR} -o allure-report --clean
-                        allure serve ${TEST_RESULTS_DIR} &
+                        npx allure generate ${TEST_RESULTS_DIR} -o allure-report --clean
+                        npx allure serve ${TEST_RESULTS_DIR} &
                     '''
 
                     cucumber([
