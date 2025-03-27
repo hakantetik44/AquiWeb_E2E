@@ -1,23 +1,22 @@
 const { defineConfig } = require('cypress')
 const createBundler = require('@bahmutov/cypress-esbuild-preprocessor')
-const addCucumberPreprocessorPlugin = require('@badeball/cypress-cucumber-preprocessor').addCucumberPreprocessorPlugin
-const createEsbuildPlugin = require('@badeball/cypress-cucumber-preprocessor/esbuild').createEsbuildPlugin
+const preprocessor = require('@badeball/cypress-cucumber-preprocessor')
+const createEsbuildPlugin = require('@badeball/cypress-cucumber-preprocessor/esbuild')
+const allureWriter = require('@shelex/cypress-allure-plugin/writer')
 
 async function setupNodeEvents(on, config) {
   // Cucumber plugin
-  await addCucumberPreprocessorPlugin(on, config)
+  await preprocessor.addCucumberPreprocessorPlugin(on, config)
 
   // esbuild bundler
   on('file:preprocessor',
     createBundler({
-      plugins: [createEsbuildPlugin(config)],
-      bundle: true,
-      sourcemap: true
+      plugins: [createEsbuildPlugin.default(config)],
     })
   )
 
   // Allure plugin
-  require('@shelex/cypress-allure-plugin/writer')(on, config)
+  allureWriter(on, config)
 
   return config
 }
@@ -32,21 +31,24 @@ module.exports = defineConfig({
     viewportHeight: 1080,
     video: true,
     screenshotOnRunFailure: true,
-    reporter: 'cypress-multi-reporters',
+    reporter: '@shelex/cypress-allure-plugin',
     reporterOptions: {
-      reporterEnabled: 'spec, @shelex/cypress-allure-plugin',
-      reportDir: 'cypress/results'
+      allure: true,
+      allureResultsDir: 'allure-results',
+      allureReportDir: 'allure-report'
     },
     setupNodeEvents,
     experimentalSourceRewriting: true,
-    defaultCommandTimeout: 30000,
+    defaultCommandTimeout: 10000,
     pageLoadTimeout: 60000,
-    requestTimeout: 30000,
+    requestTimeout: 10000,
     responseTimeout: 30000,
     env: {
       allure: true,
-      allureResultsDir: 'allure-results'
-    }
+      allureResultsDir: 'allure-results',
+      allureReportDir: 'allure-report'
+    },
+    chromeWebSecurity: false
   },
   "cypress-cucumber-preprocessor": {
     nonGlobalStepDefinitions: true,
