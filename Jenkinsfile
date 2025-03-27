@@ -148,6 +148,16 @@ EOF
                             fi
                         fi
                         
+                        # Generate Cucumber HTML report
+                        echo "📊 Generating Cucumber HTML report..."
+                        if [ -f "${CUCUMBER_REPORT}" ]; then
+                            echo "✅ Found cucumber JSON report, generating HTML..."
+                            node cucumber-html-report.js
+                            echo "✅ Cucumber HTML report generated"
+                        else
+                            echo "❌ No cucumber JSON report found for HTML generation"
+                        fi
+                        
                         # Copy Cypress videos to test-videos directory if they exist
                         if [ -d "cypress/videos" ]; then
                             echo "📼 Copying Cypress videos..."
