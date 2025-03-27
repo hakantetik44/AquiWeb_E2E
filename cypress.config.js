@@ -18,6 +18,13 @@ async function setupNodeEvents(on, config) {
   // Allure plugin
   allureWriter(on, config)
 
+  // After run hook
+  on('after:run', async (results) => {
+    if (results) {
+      await allureWriter.endStep(results.state);
+    }
+  });
+
   return config
 }
 
@@ -44,7 +51,7 @@ module.exports = defineConfig({
       allureReportDir: 'allure-report'
     },
     chromeWebSecurity: false,
-    exit: true,
+    exit: false,
     record: false
   },
   "cypress-cucumber-preprocessor": {
