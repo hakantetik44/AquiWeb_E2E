@@ -1,33 +1,40 @@
 {
-  "name": "aquiweb-e2e",
+  "name": "aquiweb_e2e",
   "version": "1.0.0",
   "description": "E2E tests for AquiWeb",
   "main": "index.js",
   "scripts": {
-    "test": "cypress run --browser electron --headless",
+    "test": "cypress run",
     "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
     "report:generate": "node cucumber-html-report.js"
   },
-  "keywords": [],
+  "keywords": [
+    "cypress",
+    "cucumber",
+    "e2e",
+    "testing"
+  ],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@badeball/cypress-cucumber-preprocessor": "12.0.0",
-    "@bahmutov/cypress-esbuild-preprocessor": "2.1.5",
+    "@badeball/cypress-cucumber-preprocessor": "^15.0.0",
+    "@bahmutov/cypress-esbuild-preprocessor": "^2.1.5",
     "@shelex/cypress-allure-plugin": "2.40.0",
-    "allure-commandline": "2.24.0",
-    "allure-mocha": "2.0.0",
-    "cypress": "12.17.4",
-    "cypress-mochawesome-reporter": "3.5.1",
-    "cypress-multi-reporters": "1.6.1",
-    "cypress-cucumber-json": "1.0.0",
-    "esbuild": "0.19.11",
-    "multiple-cucumber-html-reporter": "3.5.0"
+    "cypress": "^13.6.1",
+    "cypress-mochawesome-reporter": "^3.5.0",
+    "cypress-multi-reporters": "^1.6.1",
+    "esbuild": "^0.19.8",
+    "multiple-cucumber-html-reporter": "^3.4.0"
   },
   "cypress-cucumber-preprocessor": {
     "stepDefinitions": "cypress/support/step_definitions/**/*.js",
     "nonGlobalStepDefinitions": true,
     "filterSpecs": true,
-    "omitFiltered": true
+    "omitFiltered": true,
+    "json": {
+      "enabled": true,
+      "output": "test-results/cucumber-report.json"
+    }
   }
 }

@@ -1,78 +1,103 @@
-# AquiWeb E2E Test Automation Project
+# 🚀 Tests E2E AquiWeb
 
-Bu proje, AquiWeb web uygulamasının end-to-end (E2E) test otomasyonunu içermektedir. Cypress test framework'ü kullanılarak geliştirilmiştir.
+<div align="center">
 
-## 🛠 Teknolojiler & Araçlar
+![Cypress](https://img.shields.io/badge/Cypress-12.0.0-brightgreen.svg)
+![Cucumber](https://img.shields.io/badge/Cucumber-15.0.0-brightgreen.svg)
+![Node.js](https://img.shields.io/badge/Node.js-18.x-blue.svg)
 
-- [Cypress](https://www.cypress.io/) - E2E Test Framework
-- [Node.js](https://nodejs.org/) - JavaScript Runtime
-- [Jenkins](https://jenkins.io/) - CI/CD Pipeline
-- [Allure Report](http://allure.qatools.ru/) - Test Raporlama
-- [Cucumber](https://cucumber.io/) - BDD Framework
+[![Tests E2E](https://github.com/hakantetik44/AquiWeb_E2E/actions/workflows/cypress.yml/badge.svg)](https://github.com/hakantetik44/AquiWeb_E2E/actions/workflows/cypress.yml)
 
-## 🚀 Kurulum
+</div>
 
-### Ön Gereksinimler
+## 📋 Description
 
-- Node.js (v14 veya üzeri)
-- npm (Node Package Manager)
-- Java JDK (Allure Report için)
-- Jenkins (CI/CD için)
-- ffmpeg (Video işleme için)
+Ce projet contient les tests end-to-end (E2E) pour le site web AquiWeb, développés avec Cypress et Cucumber. Les tests sont écrits en Gherkin pour une meilleure lisibilité et maintenabilité.
 
-### Kurulum Adımları
+## 🛠 Technologies Utilisées
 
-1. Projeyi klonlayın:
+- [Cypress](https://www.cypress.io/) - Framework de test E2E
+- [Cucumber](https://cucumber.io/) - Framework BDD
+- [Node.js](https://nodejs.org/) - Environnement d'exécution
+- [ESBuild](https://esbuild.github.io/) - Bundler JavaScript
+- [Allure](https://docs.qameta.io/allure/) - Outil de reporting
+
+## 🚀 Installation
+
 ```bash
+# Cloner le repository
 git clone https://github.com/hakantetik44/AquiWeb_E2E.git
-cd AquiWeb_E2E
+
+# Installer les dépendances
+npm install --legacy-peer-deps
+
+# Installer Cypress
+npx cypress install
 ```
 
-2. Bağımlılıkları yükleyin:
-```bash
-npm install
-```
-
-## 🏃‍♂️ Testleri Çalıştırma
-
-### Lokalde Çalıştırma
+## 🎯 Exécution des Tests
 
 ```bash
-# Test Runner'ı açmak için
+# Lancer Cypress en mode interactif
 npm run cypress:open
 
-# Testleri headless modda çalıştırmak için
-npm run test
+# Lancer les tests en mode headless
+npm run cypress:run
 
-# Allure raporu oluşturmak için
-npm run allure:report
-
-# Allure raporunu görüntülemek için
-npm run allure:open
+# Générer les rapports
+npm run report:generate
 ```
 
-### Jenkins Pipeline
+## 📁 Structure du Projet
 
-Jenkins pipeline'ı aşağıdaki aşamaları içerir:
+```
+AquiWeb_E2E/
+├── cypress/
+│   ├── e2e/                 # Fichiers feature Cucumber
+│   ├── support/             # Fichiers de support
+│   │   └── step_definitions/ # Définitions des étapes
+│   ├── fixtures/            # Données de test
+│   └── pages/              # Page Objects
+├── test-results/           # Rapports de test
+└── cypress.config.js       # Configuration Cypress
+```
 
-1. **Setup**: Gerekli klasörlerin oluşturulması ve bağımlılıkların yüklenmesi
-2. **Test**: E2E testlerinin çalıştırılması
-3. **Process Videos**: Test videolarının işlenmesi
-4. **Generate Reports**: Allure ve Cucumber raporlarının oluşturulması
+## 📊 Rapports
 
-## 📊 Raporlama
+Les rapports de test sont générés dans le dossier `test-results/` et incluent :
+- Rapports Cucumber HTML
+- Rapports Mochawesome
+- Rapports Allure
 
-Proje iki farklı raporlama sistemi kullanmaktadır:
+## 🔄 CI/CD
 
-### Allure Report
-- Detaylı test adımları
-- Screenshot'lar
-- Video kayıtları
-- Test süreleri ve istatistikler
+Les tests sont exécutés automatiquement via GitHub Actions et Jenkins.
 
-### Cucumber Report
-- BDD formatında test sonuçları
-- Trend analizi
-- Özellik bazlı raporlama
+## 📝 Scénarios de Test
 
-## 📁 Proje Yapısı 
+Les tests couvrent les fonctionnalités suivantes :
+- Navigation sur la page d'accueil
+- Accès aux pages Logiciel MES et Aquiweb
+- Navigation vers les services
+- Recherche
+- Formulaire de contact
+
+## 🤝 Contribution
+
+1. Fork le projet
+2. Créer une branche (`git checkout -b feature/AmazingFeature`)
+3. Commit les changements (`git commit -m 'Add some AmazingFeature'`)
+4. Push vers la branche (`git push origin feature/AmazingFeature`)
+5. Ouvrir une Pull Request
+
+## 📄 Licence
+
+Ce projet est sous licence ISC.
+
+---
+
+<div align="center">
+  
+[![Made with ❤️](https://img.shields.io/badge/Made%20with-%E2%9D%A4%EF%B8%8F-red.svg)](https://github.com/hakantetik44/AquiWeb_E2E)
+
+</div> 

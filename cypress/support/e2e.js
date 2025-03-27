@@ -4,12 +4,18 @@ import '@shelex/cypress-allure-plugin';
 import './commands'
 
 // Import cucumber steps
-import './step_definitions/homepage'
+import './step_definitions/astreeStep'
 
 // Hide XHR requests from command log
 const app = window.top;
 if (app) {
-  app.console.log = () => {};
+  app.console.log = (function (old_function) {
+    return function () {
+      if (!arguments[0]?.includes('XHR')) {
+        old_function.apply(this, arguments);
+      }
+    };
+  }(app.console.log));
 }
 
 // Alternatively you can use CommonJS syntax:
