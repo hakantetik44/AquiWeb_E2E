@@ -13,28 +13,10 @@ if (app) {
   }(app.console.log));
 }
 
-// Configure Allure reporting
-Cypress.on('test:before:run:async', async (details) => {
-  await allureWriter.startStep(details.title);
-});
-
-Cypress.on('test:after:run:async', async (results) => {
-  await allureWriter.endStep(results.state);
-});
-
-// Log uncaught exceptions to Allure
-Cypress.on('uncaught:exception', (err, runnable) => {
-  allureWriter.addText('Uncaught Exception', err.message);
-  return false;
-});
-
-// Log test suite start and end
 before(() => {
-  allureWriter.startSuite('Astree Software Tests');
-});
-
-after(() => {
-  allureWriter.endSuite();
+  cy.allure().epic('AquiWeb E2E Tests')
+    .feature('Automated Testing')
+    .story('End-to-End Test Suite');
 });
 
 beforeEach(() => {
@@ -43,4 +25,18 @@ beforeEach(() => {
 
 afterEach(() => {
   cy.log('Test tamamlandı');
+});
+
+after(() => {
+  cy.log('Tüm testler tamamlandı');
+  // Testler bittikten sonra Cypress'i kapat
+  if (Cypress.browser.isHeadless) {
+    cy.task('closeBrowser');
+  }
+});
+
+// Handle uncaught exceptions
+Cypress.on('uncaught:exception', (err) => {
+  console.error('Uncaught exception:', err.message);
+  return false;
 }); 

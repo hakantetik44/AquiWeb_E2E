@@ -18,10 +18,13 @@ async function setupNodeEvents(on, config) {
   // Allure plugin
   allureWriter(on, config)
 
-  // After run hook
-  on('after:run', async (results) => {
-    if (results) {
-      await allureWriter.endStep(results.state);
+  // Custom task to close browser
+  on('task', {
+    closeBrowser() {
+      if (global.browser) {
+        return global.browser.close();
+      }
+      return null;
     }
   });
 
@@ -51,7 +54,7 @@ module.exports = defineConfig({
       allureReportDir: 'allure-report'
     },
     chromeWebSecurity: false,
-    exit: false,
+    exit: true,
     record: false
   },
   "cypress-cucumber-preprocessor": {
