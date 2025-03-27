@@ -68,11 +68,14 @@ pipeline {
                         export CYPRESS_allureResultsDir=${TEST_RESULTS_DIR}
                         export CYPRESS_allureAttachRequests=true
                         
+                        # Create necessary directories
+                        mkdir -p ${TEST_RESULTS_DIR} ${REPORT_DIR} ${VIDEO_DIR}
+                        
                         # Run tests with detailed logging and capture output
                         CYPRESS_VERBOSE=true npm run test -- --config video=true,screenshotOnRunFailure=true,reporter=cypress-multi-reporters,reporterOptions.configFile=cypress.config.js 2>&1 | tee test-output/test-run.log || {
                             echo "❌ Test execution failed with exit code $?"
-                            echo "📋 Last 50 lines of test output:"
-                            tail -n 50 test-output/test-run.log
+                            echo "📋 Last 100 lines of test output:"
+                            tail -n 100 test-output/test-run.log
                             echo "📁 Checking for error screenshots..."
                             if [ -d "cypress/screenshots" ]; then
                                 echo "Found screenshots:"
@@ -82,6 +85,16 @@ pipeline {
                             if [ -d "${VIDEO_DIR}" ]; then
                                 echo "Found videos:"
                                 ls -la ${VIDEO_DIR}/
+                            fi
+                            echo "📁 Checking for test results..."
+                            if [ -d "${TEST_RESULTS_DIR}" ]; then
+                                echo "Found test results:"
+                                ls -la ${TEST_RESULTS_DIR}/
+                            fi
+                            echo "📁 Checking for cucumber reports..."
+                            if [ -d "test-results" ]; then
+                                echo "Found cucumber reports:"
+                                ls -la test-results/
                             fi
                             exit 1
                         }
@@ -170,6 +183,7 @@ EOF
                 wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']) {
                     echo '📊 Generating reports...'
                     
+                    // Always try to generate reports even if tests failed
                     allure([
                         includeProperties: false,
                         jdk: '',
@@ -178,7 +192,15 @@ EOF
                         results: [[path: "${TEST_RESULTS_DIR}"]]
                     ])
 
-                    sh 'zip -r test-reports.zip ${TEST_RESULTS_DIR} ${REPORT_DIR} ${VIDEO_DIR}'
+                    sh '''
+                        echo "📦 Creating test reports archive..."
+                        if [ -d "${TEST_RESULTS_DIR}" ] || [ -d "${REPORT_DIR}" ] || [ -d "${VIDEO_DIR}" ]; then
+                            zip -r test-reports.zip ${TEST_RESULTS_DIR} ${REPORT_DIR} ${VIDEO_DIR} || true
+                            echo "✅ Test reports archive created"
+                        else
+                            echo "⚠️ No test results to archive"
+                        fi
+                    '''
                 }
             }
         }
